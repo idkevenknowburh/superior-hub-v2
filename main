@@ -1,62 +1,79 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-local Window = Rayfield:CreateWindow({
-   Name = "Sheitsa Hub V2",
-   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "Sheitsa Hub V2",
-   LoadingSubtitle = "by Sheitsa",
-   ShowText = "Sheitsa Hub V2", -- for mobile users to unhide Rayfield, change if you'd like
-   Theme = "Ocean", -- Check https://docs.sirius.menu/rayfield/configuration/themes
-
-   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
-
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from emitting warnings when the script has a version mismatch with the interface.
-
-   -- ScriptID = "sid_xxxxxxxxxxxx", -- Your Script ID from developer.sirius.menu — enables analytics, managed keys, and script hosting
-
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
-      FileName = "Big Hub"
-   },
-
-   Discord = {
-      Enabled = true, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "fwVcCGNnAh", -- The Discord invite code, do not include Discord.gg/. E.g. Discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the Discord every time they load it up
-   },
-
-   KeySystem = true, -- Set this to true to use our key system
-   KeySettings = {
-      Title = "Sheitsa Hub V2 | Easy Key",
-      Subtitle = "Easy Key Is Located In Discord Server",
-      Note = "Click 'Copy Discord Link' below to get the invite!", 
-      FileName = "Key", 
-      SaveKey = true, 
-      GrabKeyFromSite = false, 
-      Key = {"fastkey"},
-      
-      Actions = {
-         [1] = {
-            Text = "Copy Discord Link",
-            OnPressed = function()
-               if setclipboard then
-                  setclipboard("https://discord.gg/fwVcCGNnAh")
-                  Rayfield:Notify({
-                     Title = "Clipboard",
-                     Content = "Discord invite link copied to clipboard!",
-                     Duration = 3,
-                     Image = nil, -- Set to nil
+-- Displays a custom button frame directly below/beside the key prompt window
+Rayfield:Notify({
+   Title = "Get Access Key",
+   Content = "Need a key? Click below to instantly join our Discord or copy the link!",
+   Duration = 60, -- Stays on screen for 60 seconds or until they dismiss it
+   Image = nil,
+   Actions = {
+      ["Join Discord"] = {
+         Name = "Join Discord",
+         Callback = function()
+            -- Triggers compatible executors to join automatically via local protocol
+            if request then
+               request({
+                  Url = "http://127.0.0.1:6463/rpc?v=1",
+                  Method = "POST",
+                  Headers = { ["Content-Type"] = "application/json", ["Origin"] = "https://discord.com" },
+                  Body = game:GetService("HttpService"):JSONEncode({
+                     cmd = "INVITE_BROWSER",
+                     args = { code = "fwVcCGNnAh" },
+                     nonce = game:GetService("HttpService"):GenerateGUID(false)
                   })
-               elseif toclipboard then
-                  toclipboard("https://discord.gg/fwVcCGNnAh")
-               end
+               })
+            else
+               -- Fallback to clipboard if executor doesn't support direct RPC joining
+               if setclipboard then setclipboard("https://discord.gg/fwVcCGNnAh") end
             end
-         }
+         end
+      },
+      ["Copy Link"] = {
+         Name = "Copy Invite Link",
+         Callback = function()
+            if setclipboard then
+               setclipboard("https://discord.gg/fwVcCGNnAh")
+            end
+         end
       }
    }
 })
 
-local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image set to nil
-local MainSection = MainTab:CreateSection("Main") -- Fixed variable reference from 'Tab' to 'MainTab'
+-- Main key system activation window proceeds normally
+local Window = Rayfield:CreateWindow({
+   Name = "Sheitsa Hub V2",
+   Icon = 0,
+   LoadingTitle = "Sheitsa Hub V2",
+   LoadingSubtitle = "by Sheitsa",
+   ShowText = "Sheitsa Hub V2",
+   Theme = "Ocean",
+   ToggleUIKeybind = "K",
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = true,
+      Invite = "fwVcCGNnAh",
+      RememberJoins = true
+   },
+
+   KeySystem = true,
+   KeySettings = {
+      Title = "Sheitsa Hub V2 | Easy Key",
+      Subtitle = "Easy Key Is Located In Discord Server",
+      Note = "Check the notifications tab to copy the key invite!",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"fastkey"}
+   }
+})
+
+local MainTab = Window:CreateTab("🏠 Home", nil)
+local MainSection = MainTab:CreateSection("Main")
