@@ -31,13 +31,32 @@ local Window = Rayfield:CreateWindow({
    KeySettings = {
       Title = "Sheitsa Hub V2 | Easy Key",
       Subtitle = "Easy Key Is Located In Discord Server",
-      Note = "Join Server From 'Misc' Tab", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique, as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"fastkey"} -- List of keys that the system will accept, can be RAW file links (pastebin, github, etc.) or simple strings ("hello", "key22")
+      Note = "Click 'Copy Discord Link' below to get the invite!", 
+      FileName = "Key", 
+      SaveKey = true, 
+      GrabKeyFromSite = false, 
+      Key = {"fastkey"},
+      
+      Actions = {
+         [1] = {
+            Text = "Copy Discord Link",
+            OnPressed = function()
+               if setclipboard then
+                  setclipboard("https://discord.gg/fwVcCGNnAh")
+                  Rayfield:Notify({
+                     Title = "Clipboard",
+                     Content = "Discord invite link copied to clipboard!",
+                     Duration = 3,
+                     Image = nil, -- Set to nil
+                  })
+               elseif toclipboard then
+                  toclipboard("https://discord.gg/fwVcCGNnAh")
+               end
+            end
+         }
+      }
    }
 })
 
-local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image
-local MainSection = Tab:CreateSection("Main")
+local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image set to nil
+local MainSection = MainTab:CreateSection("Main") -- Fixed variable reference from 'Tab' to 'MainTab'
