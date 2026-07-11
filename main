@@ -41,3 +41,9 @@ local Window = Rayfield:CreateWindow({
 
 local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image
 local MainSection = Tab:CreateSection("Main")
+
+local LabelMain = MainTab:CreateLabel("Sheitsa Hub V2.0", nil, Color3.fromRGB(0, 110, 175), false) -- Title, Icon, Color, IgnoreTheme
+
+local MainDivider = MainTab:CreateDivider()
+
+local UpdateLabel = MainTab:CreateLabel("UPDATE 2.0", nil, Color3.fromRGB(0, 110, 175), false) -- Title, Icon, Color, IgnoreTheme
